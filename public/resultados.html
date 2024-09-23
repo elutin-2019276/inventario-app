@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de la Búsqueda</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .scroll-button {
+            position: fixed;
+            right: 20px;
+            z-index: 1000;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 20px;
+            margin: 2px;
+            /* Espacio reducido entre las flechas */
+        }
+
+        .scroll-up {
+            top: 45%;
+            /* Ajuste para centrar más */
+        }
+
+        .scroll-down {
+            top: 55%;
+            /* Ajuste para centrar más */
+        }
+
+        .actions {
+            text-align: left;
+            /* Alinear el botón a la izquierda */
+            margin: 20px;
+            /* Espacio alrededor del botón */
+        }
+
+        #btnAgregar,
+        #btnImprimir,
+        #btnReiniciar {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            /* Espacio entre botones */
+        }
+
+        #btnAgregar:hover,
+        #btnImprimir:hover,
+        #btnReiniciar:hover {
+            background-color: #45a049;
+            /* Cambia el color al pasar el mouse */
+            transition: background-color 0.3s;
+            /* Transición suave */
+        }
+
+        .resultado-info {
+            margin: 20px;
+            font-size: 18px;
+        }
+
+        .highlight {
+            background-color: yellow;
+            /* Color para resaltar las celdas */
+        }
+
+        .no-resultados {
+            color: red;
+            /* Color del mensaje de no resultados */
+            font-size: 18px;
+            text-align: center;
+            margin: 20px;
+        }
+
+        .historial-busquedas {
+            margin: 20px;
+        }
+
+        .historial-busquedas ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .historial-busquedas li {
+            cursor: pointer;
+            color: #4CAF50;
+            margin: 5px 0;
+        }
+
+        .historial-busquedas li:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="scroll-button scroll-up" aria-label="Desplazarse hacia arriba">↑</button>
+    <button class="scroll-button scroll-down" aria-label="Desplazarse hacia abajo">↓</button>
+
+    <div class="header">
+        <a href="index.html">
+            <img src="/logo.png" alt="Promerica Logo" class="logo">
+        </a>
+        <h1>Resultados de la Búsqueda</h1>
+    </div>
+
+    <div id="resultado-info" class="resultado-info"></div>
+    <div id="mensajeNoResultados" class="no-resultados" style="display: none;"></div>
+
+    <div class="actions">
+        <button id="btnAgregar">Agregar</button>
+        <button id="btnImprimir">Imprimir PDF</button>
+        <button id="btnReiniciar">Reiniciar Búsqueda</button>
+    </div>
+
+    <div class="historial-busquedas">
+        <h2>Historial de Búsquedas</h2>
+        <ul id="listaHistorial"></ul>
+    </div>
+
+    <table id="tablaResultados" class="table-results">
+        <thead>
+            <tr>
+                <th>No. de Inventario 1</th>
+                <th>No. de Inventario 2</th>
+                <th>Descripción</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Serie</th>
+                <th>No. de Estantería</th>
+                <th>Estado</th>
+                <th>Detalle Técnico</th>
+                <th>Observaciones</th>
+                <th>Fecha de Ingreso</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="cuerpoTabla">
+        </tbody>
+    </table>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        let termino = urlParams.get('termino');
+        let datos = []; // Almacena los datos de la búsqueda
+
+        // Cargar el historial de búsquedas
+        function cargarHistorial() {
+            const listaHistorial = document.getElementById('listaHistorial');
+            listaHistorial.innerHTML = ''; // Limpiar lista antes de cargar
+
+            const historial = JSON.parse(localStorage.getItem('historial')) || [];
+            historial.forEach(termino => {
+                const li = document.createElement('li');
+                li.textContent = termino;
+
+                // Hacer que el término de búsqueda sea clickeable
+                li.addEventListener('click', () => {
+                    buscar(termino);
+                });
+
+                listaHistorial.appendChild(li);
+            });
+        }
+
+        // Función para buscar un término
+        function buscar(termino) {
+            document.getElementById('resultado-info').textContent = ''; // Limpiar resultados previos
+            datos = []; // Limpiar datos previos
+            fetch(`/buscar?termino=${termino}`)
+                .then(response => response.json())
+                .then(resultados => {
+                    datos = resultados;
+                    mostrarResultados();
+                });
+        }
+
+        // Función para agregar búsqueda al historial
+        function agregarAlHistorial(termino) {
+            let historial = JSON.parse(localStorage.getItem('historial')) || [];
+
+            // Evitar duplicados
+            if (!historial.includes(termino)) {
+                historial.push(termino);
+                localStorage.setItem('historial', JSON.stringify(historial));
+            }
+        }
+
+        // Cargar los datos si existe un término de búsqueda
+        if (termino) {
+            agregarAlHistorial(termino); // Agregar al historial
+            fetch(`/buscar?termino=${termino}`)
+                .then(response => response.json())
+                .then(resultados => {
+                    datos = resultados;
+                    mostrarResultados();
+                });
+        }
+
+        // Función para mostrar resultados en la tabla
+        function mostrarResultados() {
+            const cuerpoTabla = document.getElementById('cuerpoTabla');
+            const resultadoInfo = document.getElementById('resultado-info');
+            const mensajeNoResultados = document.getElementById('mensajeNoResultados');
+
+            // Limpiar la tabla y el mensaje de no resultados
+            cuerpoTabla.innerHTML = '';
+            mensajeNoResultados.style.display = 'none';
+
+            if (datos.length === 0) {
+                mensajeNoResultados.textContent = `No se encontraron resultados para "${termino}".`;
+                mensajeNoResultados.style.display = 'block';
+            } else {
+                resultadoInfo.textContent = `Se encontraron ${datos.length} resultados para "${termino}"`;
+                datos.forEach(fila => {
+                    agregarFila(fila);
+                });
+            }
+        }
+
+        // Función para agregar fila a la tabla
+        function agregarFila(fila = {}) {
+            const cuerpoTabla = document.getElementById('cuerpoTabla');
+            const tr = document.createElement('tr');
+
+            // Crear las celdas para cada columna de datos
+            Object.entries(fila).forEach(([key, valor]) => {
+                const td = document.createElement('td');
+                td.innerText = valor || '';
+                tr.appendChild(td);
+
+                // Resaltar celdas que coincidan con el término de búsqueda
+                if (valor && valor.toString().toLowerCase().includes(termino.toLowerCase())) {
+                    td.classList.add('highlight');
+                }
+            });
+
+            // Crear la celda para los botones de "Acciones"
+            const accionesTd = document.createElement('td');
+            accionesTd.classList.add('acciones');
+
+            const btnEditarFila = document.createElement('button');
+            const btnEliminarFila = document.createElement('button');
+
+            btnEditarFila.innerText = 'Editar';
+            btnEliminarFila.innerText = 'Eliminar';
+            btnEliminarFila.classList.add('eliminar');
+
+            btnEditarFila.addEventListener('click', () => editarFila(tr));
+            btnEliminarFila.addEventListener('click', () => eliminarFila(tr));
+
+            // Agregar los botones a la celda de acciones
+            accionesTd.appendChild(btnEditarFila);
+            accionesTd.appendChild(btnEliminarFila);
+            tr.appendChild(accionesTd); // Añadir la celda de acciones a la fila
+
+            // Agregar la fila completa al cuerpo de la tabla
+            cuerpoTabla.appendChild(tr);
+        }
+
+        // Función para editar una fila
+        function editarFila(tr) {
+            const celdas = tr.querySelectorAll('td:not(:last-child)'); // Ignorar la última celda (botones)
+            celdas.forEach((td, index) => {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = td.innerText;
+                td.innerText = '';
+                td.appendChild(input);
+            });
+
+            // Cambiar botón a "Guardar"
+            const accionesTd = tr.querySelector('td:last-child');
+            const btnGuardar = document.createElement('button');
+            btnGuardar.innerText = 'Guardar';
+
+            btnGuardar.addEventListener('click', () => {
+                celdas.forEach(td => {
+                    const input = td.querySelector('input');
+                    if (input) {
+                        td.innerText = input.value;
+                    }
+                });
+                // Volver a colocar los botones de Editar y Eliminar
+                accionesTd.innerHTML = '';
+                const btnEditarFila = document.createElement('button');
+                const btnEliminarFila = document.createElement('button');
+                btnEditarFila.innerText = 'Editar';
+                btnEliminarFila.innerText = 'Eliminar';
+                btnEliminarFila.classList.add('eliminar');
+
+                btnEditarFila.addEventListener('click', () => editarFila(tr));
+                btnEliminarFila.addEventListener('click', () => eliminarFila(tr));
+
+                accionesTd.appendChild(btnEditarFila);
+                accionesTd.appendChild(btnEliminarFila);
+            });
+
+            accionesTd.innerHTML = '';
+            accionesTd.appendChild(btnGuardar);
+        }
+
+        // Función para eliminar una fila
+        function eliminarFila(tr) {
+            const confirmacion = confirm('¿Está seguro de que desea eliminar esta fila?');
+            if (confirmacion) {
+                tr.remove();
+            }
+        }
+
+        // Función para agregar una nueva fila vacía
+        document.getElementById('btnAgregar').addEventListener('click', () => {
+            agregarFila({
+                "No. de Inventario 1": '',
+                "No. de Inventario 2": '',
+                "Descripción": '',
+                "Marca": '',
+                "Modelo": '',
+                "Serie": '',
+                "No. de Estantería": '',
+                "Estado": '',
+                "Detalle Técnico": '',
+                "Observaciones": '',
+                "Fecha de Ingreso": ''
+            });
+        });
+
+        // Función para imprimir PDF
+        document.getElementById('btnImprimir').addEventListener('click', () => {
+            window.print();
+        });
+
+        // Función para reiniciar la búsqueda
+        document.getElementById('btnReiniciar').addEventListener('click', () => {
+            // Limpiar datos y volver a cargar
+            datos = [];
+            document.getElementById('cuerpoTabla').innerHTML = '';
+            document.getElementById('resultado-info').textContent = '';
+            document.getElementById('mensajeNoResultados').style.display = 'none';
+        });
+
+        // Funciones para desplazarse hacia arriba y hacia abajo
+        document.querySelector('.scroll-up').addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        document.querySelector('.scroll-down').addEventListener('click', () => {
+            const bodyHeight = document.body.scrollHeight;
+            window.scrollTo({ top: bodyHeight, behavior: 'smooth' });
+        });
+
+        // Cargar historial al inicio
+        cargarHistorial();
+    </script>
+</body>
+
+</html>

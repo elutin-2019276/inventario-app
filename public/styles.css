@@ -1,0 +1,362 @@
+/* Importar fuente Roboto */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+/* General */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f4;
+    /* Fondo suave y neutro */
+    color: #333;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+/* Estilos generales para los botones */
+button {
+    padding: 8px 15px;
+    margin-right: 5px;
+    background-color: #4CAF50;
+    /* Verde Promerica */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+/* Cambiar color al pasar el ratón por encima */
+button:hover {
+    background-color: #45a049;
+    /* Color más claro al hacer hover */
+}
+
+/* Estilo para el botón Eliminar con un color diferente */
+button.eliminar {
+    background-color: #f44336;
+    /* Rojo para el botón Eliminar */
+}
+
+button.eliminar:hover {
+    background-color: #d32f2f;
+    /* Rojo más oscuro al hacer hover */
+}
+
+/* Estilos para la tabla */
+.table-results {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table-results th,
+.table-results td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.table-results th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.table-results td {
+    background-color: #f2f2f2;
+}
+
+
+/* Contenedor Principal */
+.main-container {
+    max-width: 1000px;
+    /* Ajusta el ancho máximo */
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    /* Fondo blanco */
+    border-radius: 12px;
+    border: 2px solid #b0bec5;
+    /* Línea verde grisácea para un toque moderno */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Encabezado */
+.header {
+    background-color: #004d40;
+    /* Verde oscuro moderno */
+    color: #ffffff;
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 4px solid #00796b;
+    /* Línea verde más clara */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.header .logo {
+    width: 140px;
+    height: auto;
+
+}
+
+.header h1 {
+    font-size: 2em;
+    margin: 0;
+    font-weight: 700;
+    text-align: center;
+    flex-grow: 2;
+    margin-right: 5rem;
+}
+
+/* Formulario de Carga */
+.upload-form {
+    position: absolute;
+    /* Posiciona el contenedor de forma absoluta */
+    top: 40%;
+    /* Ajusta la posición vertical al centro */
+    left: 50%;
+    /* Ajusta la posición horizontal al centro */
+    transform: translate(-50%, -50%);
+    /* Centra el contenedor en ambos ejes */
+    padding: 40px;
+    /* Aumenta el padding para hacerlo más "gordo" */
+    background-color: white;
+    /* Fondo blanco */
+    border-radius: 15px;
+    /* Incrementa el radio de los bordes */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    /* Aumenta la sombra para hacerlo más prominente */
+    border: none;
+    /* Elimina las líneas verdes */
+    width: 90%;
+    /* Ajusta el ancho al 90% del contenedor padre */
+    max-width: 800px;
+    /* Establece un ancho máximo para el contenedor */
+    position: fixed;
+}
+
+.upload-label {
+    font-size: 1.1rem;
+    color: gray;
+    font-weight: 600;
+    margin-bottom: 10px;
+    margin-left: -55px;
+    display: block;
+    position: center;
+    text-align: center;
+}
+
+.input-file {
+    padding: 9px;
+    font-size: 1rem;
+    margin-left: 8rem;
+    border: 2px solid gray;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 420px;
+    margin-bottom: 30px;
+    transition: border-color 0.3s ease;
+}
+
+.input-file:focus {
+    border-color: #00796b;
+    /* Verde más claro en foco */
+    outline: none;
+}
+
+.input-file+span {
+    display: block;
+    color: #666;
+    font-size: 5rem;
+    margin-top: 5px;
+    text-align: center;
+
+}
+
+.btn-upload {
+    background-color: #004d40;
+    /* Verde oscuro */
+    color: white;
+    padding: 12px 20px;
+    font-size: 1em;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    /* Establece el contexto para el desplazamiento */
+    top: 50px;
+    /* Mueve el botón hacia abajo */
+}
+
+
+.btn-upload:hover {
+    background-color: #00796b;
+    /* Verde más claro */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Barra de Búsqueda */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    margin: 0 auto;
+    /* Centra horizontalmente */
+    padding: 40px;
+    /* Aumenta el padding para hacerlo más "gordo" */
+    background-color: white;
+    /* Fondo blanco */
+    border-radius: 15px;
+    /* Incrementa el radio de los bordes */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    /* Aumenta la sombra para hacerlo más prominente */
+    width: 80%;
+    /* Ajusta el ancho al 80% del contenedor padre */
+    max-width: 800px;
+    /* Establece un ancho máximo para el contenedor */
+    position: absolute;
+    /* Posiciona el contenedor de forma absoluta */
+    top: 75%;
+    /* Ajusta la posición vertical al centro */
+    left: 50%;
+    /* Ajusta la posición horizontal al centro */
+    transform: translate(-50%, -50%);
+    /* Centra el contenedor en ambos ejes */
+    width: 90%;
+    border: none;
+    /* Elimina las líneas verdes */
+
+}
+
+.search-container label {
+    font-size: 1.1rem;
+    margin-top: -90px;
+    color: gray;
+    /* Cambia a verde oscuro si es necesario */
+    font-weight: 600;
+    max-width: 300px;
+    display: inline-block;
+    margin-right: 635px;
+    margin-left: -310px;
+    top: 50%
+}
+
+.input-buscar {
+    position: relative;
+    /* O absolute, fixed según corresponda */
+    margin: 0;
+    /* Asegúrate de que el margen no esté afectando la posición */
+    padding: 0;
+    /* Asegúrate de que el padding no esté afectando la posición */
+    top: 0;
+    /* Ajusta según sea necesario */
+    left: 0;
+    /* Ajusta según sea necesario */
+    padding: 12px;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 8px;
+    border: 2px solid gray;
+    margin-left: -950px;
+    position: relative;
+    transition: border-color 0.3s ease;
+    margin-right: 320px;
+    display: block
+}
+
+.input-buscar:focus {
+    border-color: #004d40;
+    /* Verde oscuro en foco */
+    outline: none;
+}
+
+.btn-buscar {
+    background-color: #004d40;
+    /* Verde oscuro */
+    color: white;
+    top: 50%;
+    left: 50%;
+    padding: 12px 20px;
+    font-size: 1em;
+    display: inline-block;
+    position: static;
+    margin-right: -90px;
+    margin-left: -690px;
+    position: relative;
+    right: -5px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.btn-buscar:hover {
+    background-color: #00796b;
+    /* Verde más claro */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Tabla de Resultados */
+.table-results {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table-results th,
+.table-results td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+    font-size: 1em;
+}
+
+.table-results th {
+    background-color: #004d40;
+    /* Verde oscuro */
+    color: white;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.table-results tr:nth-child(even) {
+    background-color: #f1f1f1;
+    /* Fondo gris claro */
+}
+
+.table-results tr:hover {
+    background-color: #e0f2f1;
+    /* Fondo verde claro */
+}
+
+/* Pie de Página */
+.footer {
+    position: fixed;
+    /* Fija el pie de página en la parte inferior de la ventana */
+    bottom: 0;
+    /* Ubica el pie de página en la parte inferior */
+    left: 0;
+    /* Alinea el pie de página con el borde izquierdo de la ventana */
+    width: 100%;
+    /* Asegura que el pie de página se extienda a lo largo de toda la ventana */
+    background-color: #004d40;
+    /* Verde oscuro */
+    color: white;
+    padding: 15px;
+    text-align: center;
+    border-top: 4px solid #00796b;
+    /* Línea verde más clara */
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    /* Asegura que el pie de página esté por encima de otros elementos */
+}
