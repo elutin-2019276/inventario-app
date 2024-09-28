@@ -4,66 +4,648 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Inventario</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Carga de jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Carga de autoTable -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.9/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.10/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        /* Estilos CSS */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            transform-origin: top left;
+
+        }
+
+        .resaltado {
+            background-color: yellow;
+            /* Color de fondo para el resaltado */
+            font-weight: bold;
+            /* Opcional: para hacer el texto más visible */
+            color: black;
+            /* Color del texto para asegurar visibilidad */
+        }
+
+
+        .scroll-button {
+            position: fixed;
+            right: 20px;
+            z-index: 1000;
+            background-color: #004d40;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 20px;
+            margin: 2px;
+        }
+
+        .scroll-up {
+            top: 60%;
+            /* Cambiado de 45% a 60% */
+        }
+
+        .scroll-down {
+            top: 70%;
+            /* Cambiado de 55% a 70% */
+        }
+
+        #resultadoTexto {
+            margin-top: 10px;
+            margin-left: 20px;
+            /* Ajusta este valor para moverlo más a la izquierda */
+            /* También puedes considerar otros estilos como font-size o color si lo deseas */
+        }
+
+        .scroll-button {
+            position: fixed;
+            right: 20px;
+            z-index: 1000;
+            background-color: #004d40;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 20px;
+            margin: 2px;
+        }
+
+        .scroll-up {
+            top: 45%;
+        }
+
+        .scroll-down {
+            top: 55%;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background-color: #004d40;
+            color: white;
+        }
+
+        .logo {
+            max-width: 260px;
+            margin-bottom: 10px;
+        }
+
+        .buscador {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+            flex-wrap: wrap;
+        }
+
+        .file-label {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .file-label:hover {
+            background-color: #45a049;
+        }
+
+        .buscador input[type="file"] {
+            display: none;
+        }
+
+        .buscador input[type="text"] {
+            padding: 10px;
+            width: 250px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .buscador button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .buscador button:hover {
+            background-color: #45a049;
+        }
+
+        .resultado-info {
+            margin: 20px;
+            font-size: 18px;
+        }
+
+        .highlight {
+            background-color: yellow;
+        }
+
+        .no-resultados {
+            color: red;
+            font-size: 18px;
+            text-align: center;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .actions {
+            text-align: left;
+            margin: 20px;
+        }
+
+        #btnAgregar,
+        #btnImprimir {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+            width: 220px;
+        }
+
+        #btnAgregar:hover,
+        #btnImprimir:hover {
+            background-color: #45a049;
+            width: 220px;
+
+        }
+
+        /* Estilos para botones */
+        .btnEditar {
+            background-color: #0e18bb;
+            /* Azul */
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .btnEliminar {
+            background-color: #e60c0c;
+            /* Rojo */
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .btnEditar:hover {
+            background-color: darkblue;
+            /* Azul oscuro al pasar el mouse */
+        }
+
+        .btnEliminar:hover {
+            background-color: darkred;
+            /* Rojo oscuro al pasar el mouse */
+        }
+    </style>
 </head>
 
 <body>
+    <button class="scroll-button scroll-up" aria-label="Desplazarse hacia arriba">↑</button>
+    <button class="scroll-button scroll-down" aria-label="Desplazarse hacia abajo">↓</button>
+
     <div class="header">
-        <a href="index.html">
+        <a href="/">
             <img src="/logo.png" alt="Promerica Logo" class="logo">
         </a>
         <h1>Inventario de Productos</h1>
     </div>
 
-    <div class="form-container">
-        <form action="/subir-archivo" method="POST" enctype="multipart/form-data" class="upload-form">
-            <label for="archivoExcel" class="upload-label">Cargar archivo Excel:</label>
-            <input type="file" id="archivoExcel" name="archivoExcel" accept=".xlsx" required class="input-file">
-            <button type="submit" class="btn-upload">Subir Archivo</button>
-        </form>
-    </div>
-    <br>
-    <div class="search-container">
-        <label for="buscarTermino">Buscar en inventario:</label>
-        <input type="text" id="buscarTermino" class="input-buscar" placeholder="Ingrese un término de búsqueda">
-        <button onclick="buscar()" class="btn-buscar">Buscar</button>
+    <div class="buscador">
+        <label for="fileInput" class="file-label">Subir archivo Excel</label>
+        <input type="file" id="fileInput" accept=".xlsx, .xls" />
+        <input type="text" id="terminoBusqueda" placeholder="Buscar...">
+        <button id="btnBuscar">Buscar</button>
     </div>
 
-    <!-- Campo para leer por código de barras -->
-    <div class="barcode-container">
-        <label for="codigoBarras">Escanear Código de Barras:</label>
-        <input type="text" id="codigoBarras" class="input-barcode" placeholder="Escanee el código de barras"
-            oninput="leerCodigoBarras()" autofocus>
-        <button onclick="buscarCodigoBarras()" class="btn-buscar-codigo">Buscar Código</button>
+    <div id="resultadoTexto" style="margin-top: 10px;"></div> <!-- Elemento para mostrar el conteo -->
+
+    <div id="resultado-info" class="resultado-info"></div>
+    <div id="mensajeNoResultados" class="no-resultados" style="display: none;"></div>
+
+    <div class="actions">
+        <button id="btnAgregar">Agregar</button>
+        <button id="btnImprimir">Imprimir PDF</button>
     </div>
+
+
+    <table id="tablaResultados" class="table-results">
+        <thead>
+            <tr>
+                <th>No. de Inventario 1</th>
+                <th>No. de Inventario 2</th>
+                <th>Descripción</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Serie</th>
+                <th>No. de Estantería</th>
+                <th>Estado</th>
+                <th>Detalle Técnico</th>
+                <th>Observaciones</th>
+                <th>Fecha de Ingreso</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="cuerpoTabla"></tbody>
+    </table>
 
     <script>
+        let datos = [];
+        let workbook;
+
+        // Función para cargar el archivo Excel
+        document.getElementById('fileInput').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const data = new Uint8Array(e.target.result);
+                    workbook = XLSX.read(data, { type: 'array' });
+                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                    datos = XLSX.utils.sheet_to_json(worksheet);
+                    localStorage.setItem('datos', JSON.stringify(datos));
+                    actualizarTabla();
+                    alert("Archivo cargado correctamente.");
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        });
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Suponiendo que tienes una función llamada buscar que maneja la lógica de búsqueda
+            function buscar() {
+                const termino = document.getElementById('terminoBusqueda').value;
+                // Aquí va la lógica de búsqueda...
+                console.log(`Buscando: ${termino}`);
+            }
+
+            // Asignar el evento de clic al botón de búsqueda
+            document.getElementById('btnBuscar').addEventListener('click', buscar);
+
+            // Asignar el evento de keydown al input de búsqueda
+            document.getElementById('terminoBusqueda').addEventListener('keydown', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Prevenir la acción por defecto (puede ser útil)
+                    buscar(); // Llama a la función de búsqueda
+                }
+            });
+        });
+
+        function actualizarDatosLocalStorage() {
+            // Obtenemos todas las filas
+            let filas = document.querySelectorAll("table tbody tr");
+            let datosActualizados = [];
+
+            // Recorremos cada fila para obtener los datos
+            filas.forEach(fila => {
+                let celdas = fila.querySelectorAll("td:not(:last-child)");
+                let filaDatos = [];
+
+                // Extraemos los valores de las celdas
+                celdas.forEach(celda => filaDatos.push(celda.innerText));
+                datosActualizados.push(filaDatos);
+            });
+
+            // Guardamos los datos actualizados en localStorage
+            localStorage.setItem("datos", JSON.stringify(datosActualizados));
+        }
+
+        function editarFila(index, boton) {
+            const fila = boton.parentElement.parentElement; // Obtener la fila del botón
+            const celdas = fila.querySelectorAll('td');
+
+            // Cambiar a modo edición
+            if (boton.innerText === "Editar") {
+                boton.innerText = "Guardar";
+
+                // Ocultar botones de acción
+                const celdaAcciones = celdas[celdas.length - 1]; // Última celda (acciones)
+                celdaAcciones.innerHTML = ''; // Limpiar contenido de la celda de acciones
+
+                celdas.forEach((celda, i) => {
+                    // Ignorar la celda de acciones
+                    if (i < celdas.length - 1) { // No editar la celda de acciones
+                        const input = document.createElement('input');
+                        input.value = celda.innerText;
+                        celda.innerHTML = ''; // Limpiar la celda
+                        celda.appendChild(input);
+                        celda.classList.add('editable'); // Añadir clase para resaltar
+                    }
+                });
+            } else {
+                // Guardar cambios
+                boton.innerText = "Editar";
+
+                celdas.forEach((celda, i) => {
+                    // Ignorar la celda de acciones
+                    if (i < celdas.length - 1) {
+                        const input = celda.querySelector('input');
+                        if (input) {
+                            celda.innerText = input.value; // Guardar el nuevo valor
+                            celda.classList.remove('editable'); // Remover la clase de resaltar
+                        }
+                    }
+                });
+
+                // Restaurar los botones de acción
+                const celdaAcciones = celdas[celdas.length - 1]; // Última celda (acciones)
+                celdaAcciones.innerHTML = `
+            <button onclick="editarFila(${index}, this)">Editar</button>
+            <button onclick="eliminarFila(${index})">Eliminar</button>
+        `;
+            }
+        }
+
+        function eliminarFila(index) {
+            if (confirm("¿Estás seguro de que deseas eliminar esta fila?")) {
+                datos.splice(index, 1); // Eliminar el elemento del array de datos
+                localStorage.setItem('datos', JSON.stringify(datos)); // Guardar los cambios en localStorage
+                actualizarTabla(); // Actualizar la tabla
+            }
+        }
+
+
+        function buscar(termino) {
+            const resultadoInfo = document.getElementById('resultado-info');
+            const mensajeNoResultados = document.getElementById('mensajeNoResultados');
+            const resultadoFiltrado = datos.filter(item =>
+                Object.values(item).some(valor =>
+                    String(valor).toLowerCase().includes(termino.toLowerCase())
+                )
+            );
+
+            if (resultadoFiltrado.length > 0) {
+                resultadoInfo.innerText = `Se encontraron ${resultadoFiltrado.length} resultados.`;
+                mensajeNoResultados.style.display = 'none';
+                llenarTabla(resultadoFiltrado);
+            } else {
+                resultadoInfo.innerText = '';
+                mensajeNoResultados.innerText = 'No se encontraron resultados.';
+                mensajeNoResultados.style.display = 'block';
+                document.getElementById('cuerpoTabla').innerHTML = '';
+            }
+        }
+
+        document.getElementById('btnBuscar').addEventListener('click', function () {
+            const termino = document.getElementById('terminoBusqueda').value;
+            buscar(termino);
+        });
+
+        function llenarTabla(datos) {
+            const cuerpoTabla = document.getElementById('cuerpoTabla');
+            cuerpoTabla.innerHTML = '';
+            datos.forEach((item, index) => {
+                const fila = document.createElement('tr');
+                for (let key in item) {
+                    const celda = document.createElement('td');
+                    celda.innerText = item[key];
+                    fila.appendChild(celda);
+                }
+                const celdaAcciones = document.createElement('td');
+                celdaAcciones.innerHTML = `<button class="btnEditar" data-index="${index}">Editar</button>
+                                            <button class="btnEliminar" data-index="${index}">Eliminar</button>`;
+                fila.appendChild(celdaAcciones);
+                cuerpoTabla.appendChild(fila);
+            });
+
+            agregarEventosBotones();
+        }
+
+        function agregarEventosBotones() {
+            document.querySelectorAll('.btnEditar').forEach(boton => {
+                boton.addEventListener('click', function () {
+                    const index = this.getAttribute('data-index');
+                    const fila = this.parentNode.parentNode;
+                    const valores = Array.from(fila.children).map(celda => celda.innerText);
+                    const nuevosValores = prompt('Ingrese los nuevos valores separados por comas:', valores.join(','));
+                    if (nuevosValores) {
+                        nuevosValores.split(',').forEach((valor, i) => {
+                            fila.children[i].innerText = valor;
+                        });
+                        datos[index] = nuevosValores.split(',').map(v => v.trim());
+                        localStorage.setItem('datos', JSON.stringify(datos));
+                    }
+                });
+            });
+
+            function agregarEventosBotones() {
+                document.querySelectorAll('.btnEditar').forEach(boton => {
+                    boton.addEventListener('click', function () {
+                        const index = this.getAttribute('data-index');
+                        const fila = this.parentNode.parentNode;
+                        const valores = Array.from(fila.children).map(celda => celda.innerText);
+                        const nuevosValores = prompt('Ingrese los nuevos valores separados por comas:', valores.join(','));
+
+                        if (nuevosValores) {
+                            nuevosValores.split(',').forEach((valor, i) => {
+                                fila.children[i].innerText = valor;
+                            });
+                            datos[index] = nuevosValores.split(',').map(v => v.trim());
+                            localStorage.setItem('datos', JSON.stringify(datos));
+                        }
+                    });
+                });
+
+                // Agregar evento para el botón de eliminar
+                document.querySelectorAll('.btnEliminar').forEach(boton => {
+                    boton.addEventListener('click', function () {
+                        const index = this.getAttribute('data-index');
+                        const fila = this.parentNode.parentNode;
+
+                        // Confirmar la eliminación
+                        if (confirm('¿Está seguro que desea eliminar este dato?')) {
+                            fila.remove(); // Eliminar la fila de la tabla
+                            datos.splice(index, 1); // Eliminar el dato del array
+                            localStorage.setItem('datos', JSON.stringify(datos)); // Actualizar el localStorage
+                        }
+                    });
+                });
+            }
+
+
+            document.querySelectorAll('.btnEliminar').forEach(boton => {
+                boton.addEventListener('click', function () {
+                    const index = this.getAttribute('data-index');
+                    const fila = this.parentNode.parentNode;
+                    if (confirm('¿Está seguro de que desea eliminar esta fila?')) {
+                        fila.remove();
+                        datos.splice(index, 1);
+                        localStorage.setItem('datos', JSON.stringify(datos));
+                    }
+                });
+            });
+        }
+
+        // Función para agregar una nueva fila
+        document.getElementById('btnAgregar').addEventListener('click', function () {
+            const nuevosDatos = prompt('Ingrese los datos separados por comas:');
+            if (nuevosDatos) {
+                const nuevaFila = nuevosDatos.split(',').map(valor => valor.trim());
+                datos.push(nuevaFila);
+                localStorage.setItem('datos', JSON.stringify(datos));
+                llenarTabla(datos);
+            }
+        });
+
+        // Función para desplazar la página hacia arriba y hacia abajo
+        document.querySelector('.scroll-up').addEventListener('click', function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        document.querySelector('.scroll-down').addEventListener('click', function () {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        });
+        document.getElementById('terminoBusqueda').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Evita el comportamiento por defecto del enter
+                buscar();
+            }
+        });
+
+        document.getElementById('btnBuscar').addEventListener('click', buscar);
+
+        document.getElementById('btnImprimir').addEventListener('click', function () {
+            const printWindow = window.open('', '_blank');
+
+            // Obtener la fecha y hora actual
+            const fecha = new Date();
+            const fechaActual = fecha.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+            const horaActual = fecha.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+            printWindow.document.write('<html><head><title>Imprimir PDF</title>');
+
+            // Estilos para mejorar la presentación
+            printWindow.document.write('<style>');
+            printWindow.document.write('body {font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; margin: 40px;}');
+            printWindow.document.write('h1 {text-align: center; color: #2c3e50; font-size: 26px; margin-bottom: 0;}');
+            printWindow.document.write('h2 {text-align: center; color: #7f8c8d; font-size: 18px; margin-top: 5px; font-style: italic;}');
+            printWindow.document.write('table {width: 100%; border-collapse: collapse; margin-top: 30px;}');
+            printWindow.document.write('th, td {border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 14px;}');
+            printWindow.document.write('th {background-color: #2980b9; color: white; text-transform: uppercase;}');
+            printWindow.document.write('td {color: #2c3e50;}');
+            printWindow.document.write('tr:nth-child(even) {background-color: #f9f9f9;}');
+            printWindow.document.write('tr:hover {background-color: #f1f1f1;}');
+            printWindow.document.write('</style>');
+
+            printWindow.document.write('</head><body>');
+
+            // Título e información de impresión
+            printWindow.document.write('<h1>Reporte de Inventario de Productos</h1>');
+            printWindow.document.write('<h2>Generado el ' + fechaActual + ' a las ' + horaActual + '</h2>');
+
+            // Generar la tabla con las filas visibles
+            printWindow.document.write('<table><thead><tr><th>No. de Inventario 1</th><th>No. de Inventario 2</th><th>Descripción</th><th>Marca</th><th>Modelo</th><th>Serie</th><th>No. de Estantería</th><th>Estado</th><th>Detalle Técnico</th><th>Observaciones</th><th>Fecha de Ingreso</th></tr></thead><tbody>');
+
+            // Solo seleccionar las filas visibles
+            const filasVisibles = document.querySelectorAll('table tbody tr:not([style*="display: none"])');
+
+            filasVisibles.forEach(fila => {
+                const columnas = fila.querySelectorAll('td');
+                printWindow.document.write('<tr>');
+                columnas.forEach(columna => {
+                    printWindow.document.write('<td>' + columna.textContent + '</td>');
+                });
+                printWindow.document.write('</tr>');
+            });
+
+            printWindow.document.write('</tbody></table>');
+            printWindow.document.write('</body></html>');
+
+            // Cerrar el documento y abrir el cuadro de impresión
+            printWindow.document.close();
+            printWindow.print();
+        });
+
         function buscar() {
-            const termino = document.getElementById('buscarTermino').value;
-            if (termino) {
-                window.location.href = `/resultados.html?termino=${termino}`;
-            }
+            const termino = document.getElementById('terminoBusqueda').value.toLowerCase();
+            const filas = document.querySelectorAll('table tbody tr');
+            let totalResultados = 0; // Variable para contar los resultados
+
+            // Limpiar resaltados previos
+            document.querySelectorAll('td').forEach(celda => {
+                celda.classList.remove('resaltado');
+            });
+
+            filas.forEach(fila => {
+                const celdas = fila.querySelectorAll('td');
+                let encontrado = false;
+
+                celdas.forEach(celda => {
+                    // Comprobar si el término está en la celda
+                    if (celda.textContent.toLowerCase().includes(termino)) {
+                        encontrado = true;
+                        // Resaltar la celda
+                        celda.classList.add('resaltado');
+                    }
+                });
+
+                // Mostrar/ocultar la fila según el resultado
+                if (encontrado) {
+                    fila.style.display = '';
+                    totalResultados++; // Incrementar el contador de resultados
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+
+            // Mostrar el número de resultados encontrados
+            const resultadoTexto = document.getElementById('resultadoTexto');
+            resultadoTexto.textContent = `Se encontraron ${totalResultados} resultados`; // Muestra el conteo
         }
 
-        function leerCodigoBarras() {
-            const codigo = document.getElementById('codigoBarras').value;
-            if (codigo.length >= 8) { // Ajusta este número según tus necesidades
-                buscarCodigoBarras(codigo);
-            }
-        }
 
-        function buscarCodigoBarras(codigo) {
-            window.location.href = `/resultados.html?codigo=${codigo}`;
-        }
+        // Cargar datos desde localStorage al cargar la página
+        window.onload = function () {
+            const datosGuardados = localStorage.getItem('datos');
+            if (datosGuardados) {
+                datos = JSON.parse(datosGuardados);
+                llenarTabla(datos);
+            }
+        };
+
     </script>
-
-    <div class="footer">
-        © 2024 Banco Promerica - Todos los derechos reservados
-    </div>
-
-    <script src="/index.js"></script>
-
 </body>
 
 </html>
