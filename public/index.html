@@ -13,233 +13,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.10/jspdf.plugin.autotable.min.js"></script>
     <style>
-        /* Estilos CSS */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            transform-origin: top left;
-            transform: scale(0.67);
-            transform-origin: 0 0; /* Para que el contenido se mantenga alineado al borde s
-
-        }
-
-        .resaltado {
-            background-color: yellow;
-            /* Color de fondo para el resaltado */
-            font-weight: bold;
-            /* Opcional: para hacer el texto más visible */
-            color: black;
-            /* Color del texto para asegurar visibilidad */
-        }
-
-
-        .scroll-button {
-            position: fixed;
-            right: 20px;
-            z-index: 1000;
-            background-color: #004d40;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 20px;
-            margin: 2px;
-        }
-
-        .scroll-up {
-            top: 60%;
-            /* Cambiado de 45% a 60% */
-        }
-
-        .scroll-down {
-            top: 70%;
-            /* Cambiado de 55% a 70% */
-        }
-
-        #resultadoTexto {
-            margin-top: 10px;
-            margin-left: 20px;
-            /* Ajusta este valor para moverlo más a la izquierda */
-            /* También puedes considerar otros estilos como font-size o color si lo deseas */
-        }
-
-        .scroll-button {
-            position: fixed;
-            right: 20px;
-            z-index: 1000;
-            background-color: #004d40;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 20px;
-            margin: 2px;
-        }
-
-        .scroll-up {
-            top: 45%;
-        }
-
-        .scroll-down {
-            top: 55%;
-        }
-
-        .header {
-            text-align: center;
-            padding: 20px;
-            background-color: #004d40;
-            color: white;
-        }
-
-        .logo {
-            max-width: 260px;
-            margin-bottom: 10px;
-        }
-
-        .buscador {
-            display: flex;
-            justify-content: center;
-            margin: 20px;
-            flex-wrap: wrap;
-        }
-
-        .file-label {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-right: 10px;
-            transition: background-color 0.3s;
-        }
-
-        .file-label:hover {
-            background-color: #45a049;
-        }
-
-        .buscador input[type="file"] {
-            display: none;
-        }
-
-        .buscador input[type="text"] {
-            padding: 10px;
-            width: 250px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-right: 10px;
-            font-size: 16px;
-        }
-
-        .buscador button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-
-        .buscador button:hover {
-            background-color: #45a049;
-        }
-
-        .resultado-info {
-            margin: 20px;
-            font-size: 18px;
-        }
-
-        .highlight {
-            background-color: yellow;
-        }
-
-        .no-resultados {
-            color: red;
-            font-size: 18px;
-            text-align: center;
-            margin: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th,
-        td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .actions {
-            text-align: left;
-            margin: 20px;
-        }
-
-        #btnAgregar,
-        #btnImprimir {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-right: 10px;
-            transition: background-color 0.3s;
-            width: 220px;
-        }
-
-        #btnAgregar:hover,
-        #btnImprimir:hover {
-            background-color: #45a049;
-            width: 220px;
-
-        }
-
-        /* Estilos para botones */
-        .btnEditar {
-            background-color: #0e18bb;
-            /* Azul */
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-
-        .btnEliminar {
-            background-color: #e60c0c;
-            /* Rojo */
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-
-        .btnEditar:hover {
-            background-color: darkblue;
-            /* Azul oscuro al pasar el mouse */
-        }
-
-        .btnEliminar:hover {
-            background-color: darkred;
-            /* Rojo oscuro al pasar el mouse */
-        }
     </style>
 </head>
 
@@ -295,6 +68,7 @@
     <script>
         let datos = [];
         let workbook;
+        javascript: (function () { document.body.style.zoom = '67%'; })();
 
         // Función para cargar el archivo Excel
         document.getElementById('fileInput').addEventListener('change', function (event) {
@@ -313,7 +87,6 @@
                 reader.readAsArrayBuffer(file);
             }
         });
-
 
         document.addEventListener('DOMContentLoaded', function () {
             // Suponiendo que tienes una función llamada buscar que maneja la lógica de búsqueda
@@ -335,6 +108,25 @@
             });
         });
 
+        function actualizarTabla() {
+
+        }
+
+        function obtenerDatosSinAcciones(index) {
+            const fila = document.querySelector(`#cuerpoTabla tr:nth-child(${index + 1})`);
+            const celdas = fila.querySelectorAll('td');
+            const datos = [];
+
+            celdas.forEach((celda, idx) => {
+                if (idx < celdas.length - 1) { // Ignorar la última celda que contiene los botones
+                    datos.push(celda.innerText); // Añadir solo el texto de las celdas
+                }
+            });
+
+            return datos;
+        }
+
+
         function actualizarDatosLocalStorage() {
             // Obtenemos todas las filas
             let filas = document.querySelectorAll("table tbody tr");
@@ -355,7 +147,6 @@
         }
 
         function editarFila(index, boton) {
-            const fila = boton.parentElement.parentElement; // Obtener la fila del botón
             const celdas = fila.querySelectorAll('td');
 
             // Cambiar a modo edición
@@ -408,11 +199,6 @@
             }
         }
 
-        function actualizarTabla() {
-            // Lógica de actualización de la tabla
-        }
-
-
         function buscar(termino) {
             const resultadoInfo = document.getElementById('resultado-info');
             const mensajeNoResultados = document.getElementById('mensajeNoResultados');
@@ -460,40 +246,29 @@
         }
 
         function agregarEventosBotones() {
-            document.querySelectorAll('.btnEditar').forEach(boton => {
-                boton.addEventListener('click', function () {
-                    const index = this.getAttribute('data-index');
-                    const fila = this.parentNode.parentNode;
-                    const valores = Array.from(fila.children).map(celda => celda.innerText);
-                    const nuevosValores = prompt('Ingrese los nuevos valores separados por comas:', valores.join(','));
-                    if (nuevosValores) {
-                        nuevosValores.split(',').forEach((valor, i) => {
-                            fila.children[i].innerText = valor;
-                        });
-                        datos[index] = nuevosValores.split(',').map(v => v.trim());
-                        localStorage.setItem('datos', JSON.stringify(datos));
-                    }
-                });
-            });
+    document.querySelectorAll('.btnEditar').forEach(boton => {
+        boton.addEventListener('click', function () {
+            const index = this.getAttribute('data-index');
+            const fila = this.parentNode.parentNode;
 
-            function agregarEventosBotones() {
-                document.querySelectorAll('.btnEditar').forEach(boton => {
-                    boton.addEventListener('click', function () {
-                        const index = this.getAttribute('data-index');
-                        const fila = this.parentNode.parentNode;
-                        const valores = Array.from(fila.children).map(celda => celda.innerText);
-                        const nuevosValores = prompt('Ingrese los nuevos valores separados por comas:', valores.join(','));
+            // Obtener solo los valores de las celdas, omitiendo la última celda (acciones)
+            const valores = Array.from(fila.children)
+                .slice(0, -1) // Omitir la última celda
+                .map(celda => celda.innerText);
 
-                        if (nuevosValores) {
-                            nuevosValores.split(',').forEach((valor, i) => {
-                                fila.children[i].innerText = valor;
-                            });
-                            datos[index] = nuevosValores.split(',').map(v => v.trim());
-                            localStorage.setItem('datos', JSON.stringify(datos));
-                        }
-                    });
+            const nuevosValores = prompt('Ingrese los nuevos valores separados por comas:', valores.join(','));
+            if (nuevosValores) {
+                nuevosValores.split(',').forEach((valor, i) => {
+                    fila.children[i].innerText = valor.trim(); // Actualizar el texto de la celda
                 });
 
+                // Actualizar los datos en el array y guardar en localStorage
+                datos[index] = nuevosValores.split(',').map(v => v.trim());
+                localStorage.setItem('datos', JSON.stringify(datos));
+            }
+        });
+    });
+}       
                 // Agregar evento para el botón de eliminar
                 document.querySelectorAll('.btnEliminar').forEach(boton => {
                     boton.addEventListener('click', function () {
@@ -508,8 +283,7 @@
                         }
                     });
                 });
-            }
-
+            
 
             document.querySelectorAll('.btnEliminar').forEach(boton => {
                 boton.addEventListener('click', function () {
@@ -522,8 +296,7 @@
                     }
                 });
             });
-        }
-
+        
         // Función para agregar una nueva fila
         document.getElementById('btnAgregar').addEventListener('click', function () {
             const nuevosDatos = prompt('Ingrese los datos separados por comas:');
