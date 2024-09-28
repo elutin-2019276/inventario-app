@@ -353,3 +353,51 @@ button.eliminar:hover {
     background-color: #e0f2f1;
     /* Fondo verde claro */
 }
+
+#seccionComentarios {
+    margin: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#comentario {
+    width: 100%;
+    padding: 5px;
+    font-size: 17px;
+}
+
+#btnEnviarComentario {
+    margin-top: 10px;
+    background-color: #4CAF50; /* Color verde */
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#btnEnviarComentario:hover {
+    background-color: #45a049; /* Color verde más oscuro */
+}
+
+#listaComentarios {
+    margin-top: 15px;
+    font-size: 19px;
+}
+
+button {
+    margin-left: 10px;
+    background-color: #f44336; /* Color rojo */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #8b0200; /* Color rojo más oscuro */
+}
+
+

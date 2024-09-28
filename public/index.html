@@ -27,9 +27,18 @@
         <h1>Inventario de Productos</h1>
     </div>
 
+    <div id="seccionComentarios">
+        <h3>Comentarios y Sugerencias</h3>
+        <textarea id="comentario" rows="4" placeholder="Escribe tu comentario aquí..."></textarea>
+        <br>
+        <button id="btnEnviarComentario">Enviar Comentario</button>
+        <div id="listaComentarios"></div>
+    </div>
+
     <div class="buscador">
         <label for="fileInput" class="file-label">Subir archivo Excel</label>
         <input type="file" id="fileInput" accept=".xlsx, .xls" />
+        <input type="text" id="codigoBarras"  style="display:none;" oninput="buscarProducto()" />
         <input type="text" id="terminoBusqueda" placeholder="Buscar...">
         <button id="btnBuscar">Buscar</button>
     </div>
@@ -43,7 +52,6 @@
         <button id="btnAgregar">Agregar</button>
         <button id="btnImprimir">Imprimir PDF</button>
     </div>
-
 
     <table id="tablaResultados" class="table-results">
         <thead>
@@ -88,13 +96,66 @@
             }
         });
 
-        document.addEventListener('DOMContentLoaded', function () {
-            // Suponiendo que tienes una función llamada buscar que maneja la lógica de búsqueda
-            function buscar() {
-                const termino = document.getElementById('terminoBusqueda').value;
-                // Aquí va la lógica de búsqueda...
-                console.log(`Buscando: ${termino}`);
+        let codigoTemporal = '';
+
+        document.getElementById('codigoBarras').addEventListener('keydown', function (event) {
+            // Captura el evento de tecla
+            if (event.key.length === 1) { // Si es una tecla que representa un carácter
+                codigoTemporal += event.key; // Agrega la tecla al código temporal
             }
+
+            // Si se presiona "Enter", procesa el código
+            if (event.key === 'Enter') {
+                buscarProducto(codigoTemporal); // Llama a la función de búsqueda
+                codigoTemporal = ''; // Resetea el código temporal
+                this.value = ''; // Limpia el campo de entrada
+            }
+        });
+
+        function buscarProducto(codigo) {
+            // Aquí debes implementar la lógica para buscar en tu tabla el producto correspondiente
+            console.log('Buscando producto con código:', codigo);
+            // Implementa tu lógica de búsqueda aquí
+        }
+
+        window.addEventListener('focus', function () {
+            document.getElementById('codigoBarras').style.display = 'block'; // Muestra el campo de entrada
+            document.getElementById('codigoBarras').focus(); // Enfoca el campo de entrada
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const terminoBusqueda = document.getElementById('terminoBusqueda');
+            const btnBuscar = document.getElementById('btnBuscar');
+
+            // Evento para el botón de búsqueda
+            btnBuscar.addEventListener('click', realizarBusqueda);
+
+            // Evento para detectar el escaneo del código de barras o entrada manual
+            terminoBusqueda.addEventListener('keydown', function (event) {
+                // Detectar cuando se presiona Enter
+                if (event.key === 'Enter') {
+                    realizarBusqueda();
+                }
+            });
+
+            // Función de búsqueda
+            function realizarBusqueda() {
+                const valorBusqueda = terminoBusqueda.value.trim();
+
+                // Aquí va la lógica para buscar en los datos, usando el valor de valorBusqueda
+                console.log('Buscando:', valorBusqueda);
+
+                // Ejemplo de filtrado:
+                // const resultados = datos.filter(item => item.includes(valorBusqueda));
+                // mostrarResultados(resultados);
+
+                // Limpiar el campo de búsqueda después de realizar la búsqueda
+                // Si deseas conservar el valor después de la búsqueda, comenta la siguiente línea
+                // terminoBusqueda.value = '';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
 
             // Asignar el evento de clic al botón de búsqueda
             document.getElementById('btnBuscar').addEventListener('click', buscar);
@@ -124,7 +185,6 @@
 
             return datos;
         }
-
 
         function actualizarDatosLocalStorage() {
             // Obtenemos todas las filas
@@ -284,7 +344,6 @@
             });
         }
 
-
         // Función para agregar una nueva fila
         document.getElementById('btnAgregar').addEventListener('click', function () {
             const nuevosDatos = prompt('Ingrese los datos separados por comas:');
@@ -410,6 +469,72 @@
                 llenarTabla(datos);
             }
         };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnEnviarComentario = document.getElementById('btnEnviarComentario');
+            const comentarioInput = document.getElementById('comentario');
+            const listaComentarios = document.getElementById('listaComentarios');
+
+            // Cargar comentarios desde el localStorage al inicio
+            cargarComentarios();
+
+            // Evento para enviar el comentario
+            btnEnviarComentario.addEventListener('click', () => {
+                const comentario = comentarioInput.value.trim();
+                if (comentario) {
+                    // Agregar el comentario a la lista
+                    agregarComentario(comentario);
+                    // Limpiar el campo de texto
+                    comentarioInput.value = '';
+                } else {
+                    alert('Por favor, ingresa un comentario.');
+                }
+            });
+
+            function agregarComentario(comentario) {
+                // Guardar el comentario en el localStorage
+                const comentariosGuardados = JSON.parse(localStorage.getItem('comentarios')) || [];
+                comentariosGuardados.push(comentario);
+                localStorage.setItem('comentarios', JSON.stringify(comentariosGuardados));
+
+                // Actualizar la lista de comentarios mostrada
+                mostrarComentarios(comentariosGuardados);
+            }
+
+            function cargarComentarios() {
+                const comentariosGuardados = JSON.parse(localStorage.getItem('comentarios')) || [];
+                mostrarComentarios(comentariosGuardados);
+            }
+
+            function mostrarComentarios(comentarios) {
+                listaComentarios.innerHTML = ''; // Limpiar la lista existente
+                comentarios.forEach((comentario, index) => {
+                    const divComentario = document.createElement('div');
+                    divComentario.textContent = `${index + 1}. ${comentario}`;
+
+                    // Crear botón de eliminar
+                    const btnEliminar = document.createElement('button');
+                    btnEliminar.textContent = 'Eliminar';
+                    btnEliminar.addEventListener('click', () => {
+                        eliminarComentario(index);
+                    });
+
+                    divComentario.appendChild(btnEliminar);
+                    listaComentarios.appendChild(divComentario);
+                });
+            }
+
+            function eliminarComentario(index) {
+                // Obtener comentarios existentes
+                const comentariosGuardados = JSON.parse(localStorage.getItem('comentarios')) || [];
+
+                // Eliminar el comentario
+                comentariosGuardados.splice(index, 1);
+                localStorage.setItem('comentarios', JSON.stringify(comentariosGuardados));
+                // Actualizar la lista de comentarios mostrada
+                mostrarComentarios(comentariosGuardados);
+            }
+        });
 
     </script>
 </body>
