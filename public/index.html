@@ -109,7 +109,6 @@
         });
 
         function actualizarTabla() {
-
         }
 
         function obtenerDatosSinAcciones(index) {
@@ -246,57 +245,46 @@
         }
 
         function agregarEventosBotones() {
-    document.querySelectorAll('.btnEditar').forEach(boton => {
-        boton.addEventListener('click', function () {
-            const index = this.getAttribute('data-index');
-            const fila = this.parentNode.parentNode;
-
-            // Obtener solo los valores de las celdas, omitiendo la última celda (acciones)
-            const valores = Array.from(fila.children)
-                .slice(0, -1) // Omitir la última celda
-                .map(celda => celda.innerText);
-
-            const nuevosValores = prompt('Ingrese los nuevos valores separados por comas:', valores.join(','));
-            if (nuevosValores) {
-                nuevosValores.split(',').forEach((valor, i) => {
-                    fila.children[i].innerText = valor.trim(); // Actualizar el texto de la celda
-                });
-
-                // Actualizar los datos en el array y guardar en localStorage
-                datos[index] = nuevosValores.split(',').map(v => v.trim());
-                localStorage.setItem('datos', JSON.stringify(datos));
-            }
-        });
-    });
-}       
-                // Agregar evento para el botón de eliminar
-                document.querySelectorAll('.btnEliminar').forEach(boton => {
-                    boton.addEventListener('click', function () {
-                        const index = this.getAttribute('data-index');
-                        const fila = this.parentNode.parentNode;
-
-                        // Confirmar la eliminación
-                        if (confirm('¿Está seguro que desea eliminar este dato?')) {
-                            fila.remove(); // Eliminar la fila de la tabla
-                            datos.splice(index, 1); // Eliminar el dato del array
-                            localStorage.setItem('datos', JSON.stringify(datos)); // Actualizar el localStorage
-                        }
-                    });
-                });
-            
-
-            document.querySelectorAll('.btnEliminar').forEach(boton => {
+            document.querySelectorAll('.btnEditar').forEach(boton => {
                 boton.addEventListener('click', function () {
                     const index = this.getAttribute('data-index');
                     const fila = this.parentNode.parentNode;
-                    if (confirm('¿Está seguro de que desea eliminar esta fila?')) {
-                        fila.remove();
-                        datos.splice(index, 1);
+
+                    // Obtener solo los valores de las celdas, omitiendo la última celda (acciones)
+                    const valores = Array.from(fila.children)
+                        .slice(0, -1) // Omitir la última celda
+                        .map(celda => celda.innerText);
+
+                    const nuevosValores = prompt('Ingrese los nuevos valores separados por comas:', valores.join(','));
+                    if (nuevosValores) {
+                        nuevosValores.split(',').forEach((valor, i) => {
+                            fila.children[i].innerText = valor.trim(); // Actualizar el texto de la celda
+                        });
+
+                        // Actualizar los datos en el array y guardar en localStorage
+                        datos[index] = nuevosValores.split(',').map(v => v.trim());
                         localStorage.setItem('datos', JSON.stringify(datos));
                     }
                 });
             });
-        
+
+            // Agregar evento para el botón de eliminar
+            document.querySelectorAll('.btnEliminar').forEach(boton => {
+                boton.addEventListener('click', function () {
+                    const index = this.getAttribute('data-index');
+                    const fila = this.parentNode.parentNode;
+
+                    // Confirmar la eliminación
+                    if (confirm('¿Está seguro que desea eliminar este dato?')) {
+                        fila.remove(); // Eliminar la fila de la tabla
+                        datos.splice(index, 1); // Eliminar el dato del array
+                        localStorage.setItem('datos', JSON.stringify(datos)); // Actualizar el localStorage
+                    }
+                });
+            });
+        }
+
+
         // Función para agregar una nueva fila
         document.getElementById('btnAgregar').addEventListener('click', function () {
             const nuevosDatos = prompt('Ingrese los datos separados por comas:');
