@@ -19,6 +19,8 @@
             background-color: #f4f4f4;
             color: #333;
             transform-origin: top left;
+            transform: scale(0.67);
+            transform-origin: 0 0; /* Para que el contenido se mantenga alineado al borde s
 
         }
 
@@ -638,7 +640,6 @@
             const resultadoTexto = document.getElementById('resultadoTexto');
             resultadoTexto.textContent = `Se encontraron ${totalResultados} resultados`; // Muestra el conteo
         }
-
 
         // Cargar datos desde localStorage al cargar la página
         window.onload = function () {
