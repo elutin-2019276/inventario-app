@@ -103,6 +103,7 @@ body {
     justify-content: center;
     margin: 20px;
     flex-wrap: wrap;
+    max-width: 200%;
 }
 
 .file-label {
@@ -121,33 +122,65 @@ body {
     background-color: #45a049;
 }
 
-.buscador input[type="file"] {
-    display: none;
+.buscador {
+    display: flex; /* Usar flexbox para alinear los elementos */
+    flex-direction: column; /* Apilar elementos en columnas */
+    align-items: flex-start; /* Alinear elementos a la izquierda */
+    gap: 10px; /* Espacio entre elementos */
+    max-width: 2000px; /* Ancho máximo del buscador */
+    margin: 20px auto; /* Centrar el buscador en la página */
+    padding: 20px; /* Espaciado interno */
+    border: 1px solid #ccc; /* Borde sutil */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
 }
 
-.buscador input[type="text"] {
-    padding: 10px;
-    width: 250px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-right: 10px;
-    font-size: 16px;
+.file-label {
+    font-size: 16px; /* Tamaño de la fuente */
+    margin-bottom: 5px; /* Espacio entre la etiqueta y el input */
 }
 
-.buscador button {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
+input[type="file"] {
+    padding: 10px; /* Espaciado interno */
+    border: 1px solid #4CAF50; /* Borde verde */
+    border-radius: 5px; /* Bordes redondeados */
+    width: 100%; /* Ancho completo */
+    font-size: 14px; /* Tamaño de la fuente */
+    transition: border-color 0.3s; /* Transición suave */
 }
 
-.buscador button:hover {
-    background-color: #45a049;
+input[type="file"]:focus {
+    border-color: #45a049; /* Cambiar borde al foco */
 }
+
+input[type="text"] {
+    padding: 10px; /* Espaciado interno */
+    border: 1px solid #4CAF50; /* Borde verde */
+    border-radius: 5px; /* Bordes redondeados */
+    width: 100%; /* Ancho completo */
+    font-size: 14px; /* Tamaño de la fuente */
+    transition: border-color 0.3s; /* Transición suave */
+}
+
+input[type="text"]:focus {
+    border-color: #45a049; /* Cambiar borde al foco */
+}
+
+button {
+    padding: 100px 20px; /* Espaciado interno */
+    background-color: #4CAF50; /* Color de fondo verde */
+    color: white; /* Color del texto */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambiar cursor al pasar el ratón */
+    font-size: 16px; /* Tamaño de la fuente */
+    transition: background-color 0.3s; /* Transición suave */
+}
+
+button:hover {
+    background-color: #45a049; /* Color de fondo al pasar el ratón */
+}
+
 
 .resultado-info {
     margin: 20px;
@@ -359,16 +392,18 @@ button.eliminar:hover {
     border: 1px solid #ccc;
     padding: 10px;
     border-radius: 5px;
+    width: 90%;
+    margin-left: 100px;
 }
 
 #comentario {
-    width: 100%;
+    width: 90%;
     padding: 5px;
     font-size: 17px;
 }
 
 #btnEnviarComentario {
-    margin-top: 10px;
+    margin-top: 0px;
     background-color: #4CAF50; /* Color verde */
     color: white;
     border: none;
@@ -382,8 +417,9 @@ button.eliminar:hover {
 }
 
 #listaComentarios {
-    margin-top: 15px;
+    margin-top: 26px;
     font-size: 19px;
+    line-height: 3.5; /* Espaciado entre líneas para mejorar la legibilidad */
 }
 
 button {
@@ -398,6 +434,75 @@ button {
 
 button:hover {
     background-color: #8b0200; /* Color rojo más oscuro */
+}
+
+#busquedaAvanzada {
+    background-color: #f9f9f9; /* Fondo más claro */
+    padding: 20px;
+    border-radius: 8px; /* Esquinas redondeadas */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra */
+}
+
+h2 {
+    font-size: 24px; /* Tamaño de fuente más grande */
+}
+
+label {
+    display: block;
+    margin-bottom: 8px; /* Espacio entre etiquetas y campos */
+    font-weight: bold; /* Negrita */
+}
+
+input, select {
+    width: 100%; /* Ancho completo */
+    padding: 10px; /* Espaciado interno */
+    margin-bottom: 15px; /* Espacio entre campos */
+    border: 1px solid #ccc; /* Borde más suave */
+    border-radius: 4px; /* Esquinas redondeadas */
+}
+
+button {
+    background-color: #4CAF50; /* Color de fondo */
+    color: white; /* Color del texto */
+    padding: 10px 15px; /* Espaciado interno */
+    border: none; /* Sin borde */
+    border-radius: 4px; /* Esquinas redondeadas */
+    cursor: pointer; /* Cursor de puntero */
+    font-size: 16px; /* Tamaño de fuente */
+}
+
+button:hover {
+    background-color: #45a049; /* Color de fondo al pasar el mouse */
+}
+
+.busqueda-avanzada {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.busqueda-avanzada h2 {
+    text-align: center;
+}
+
+.busqueda-avanzada label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+.busqueda-avanzada input, .busqueda-avanzada select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+
+.busqueda-avanzada button:hover {
+    background-color: #45a049;
 }
 
 

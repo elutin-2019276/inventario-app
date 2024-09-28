@@ -13,6 +13,197 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.10/jspdf.plugin.autotable.min.js"></script>
     <style>
+        .container {
+            max-width: 2010px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+
+        .subtitle {
+            color: #666;
+            font-size: 1.3em;
+            /* Tamaño de letra aumentado */
+        }
+
+        .card {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #4caf50;
+            /* Verde claro */
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="file"],
+        select {
+            width: 80%;
+            /* Reducción de ancho */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="file"] {
+            border: none;
+            padding: 10px;
+            background-color: #e8f5e9;
+            /* Fondo verde claro para el input de archivo */
+            margin-bottom: 10px;
+        }
+
+        .upload-label {
+            display: inline-block;
+            margin-bottom: 10px;
+            cursor: pointer;
+            color: #4caf50;
+            /* Color verde para la etiqueta */
+        }
+
+        button {
+            background-color: #4caf50;
+            /* Verde claro */
+            color: white;
+            border: none;
+            padding: 10px;
+            max-width: 200px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 1em;
+            /* Tamaño de letra aumentado */
+        }
+
+        button:hover {
+            background-color: #388e3c;
+            /* Verde más oscuro al pasar el ratón */
+        }
+
+        .info-message {
+            color: #d9534f;
+            /* Color rojo para el mensaje de advertencia */
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .results table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .results th,
+        .results td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .results th {
+            background-color: #004d40;
+            /* Verde claro para encabezados */
+            color: white;
+        }
+
+        .results tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .results tr:hover {
+            background-color: #e8e8e8;
+        }
+
+        .upload-section {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            /* Sombra sutil */
+            margin-bottom: 20px;
+            /* Espaciado inferior */
+        }
+
+        .upload-label {
+            font-weight: bold;
+            color: #2e7d32;
+            /* Color verde oscuro */
+            margin-bottom: 10px;
+            display: block;
+            /* Hacer que el label ocupe todo el ancho */
+        }
+
+        .file-input {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid;
+            /* Borde verde */
+            border-radius: 4px;
+            width: 100%;
+            /* Ocupa el 100% del contenedor */
+            transition: border-color 0.3s, box-shadow 0.3s;
+            /* Transición suave */
+        }
+
+        .file-input:focus {
+            outline: none;
+            /* Sin borde de enfoque */
+        }
+
+        #uploadBtn {
+            background-color: transparent;
+            /* Sin color de fondo */
+            font-family: 'Roboto', sans-serif;
+            color: #4caf50;
+            /* Color del texto */
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            /* Transición suave */
+            font-size: 1em;
+            /* Tamaño de letra */
+            margin-top: 10px;
+            /* Margen superior */
+        }
+
+        #uploadBtn:hover {
+            background-color: #4caf50;
+            /* Fondo verde al pasar el ratón */
+            color: white;
+            /* Texto blanco al pasar el ratón */
+        }
+
+        .upload-message {
+            color: #d9534f;
+            /* Color rojo para mensajes de advertencia */
+            font-weight: bold;
+            margin-top: 10px;
+            display: none;
+            /* Ocultar por defecto */
+        }
     </style>
 </head>
 
@@ -35,23 +226,64 @@
         <div id="listaComentarios"></div>
     </div>
 
-    <div class="buscador">
-        <label for="fileInput" class="file-label">Subir archivo Excel</label>
-        <input type="file" id="fileInput" accept=".xlsx, .xls" />
-        <input type="text" id="codigoBarras"  style="display:none;" oninput="buscarProducto()" />
-        <input type="text" id="terminoBusqueda" placeholder="Buscar...">
-        <button id="btnBuscar">Buscar</button>
+
+    <div class="container">
+        <!-- Sección de carga de archivo Excel -->
+        <div class="upload-section">
+            <h2>Cargar Archivo Excel</h2>
+            <label class="upload-label" for="inputExcel">Seleccionar archivo</label>
+            <input type="file" id="inputExcel" accept=".xlsx, .xls">
+            <div class="upload-message" id="uploadMessage"></div>
+        </div>
+
+        <!-- Formulario de Búsqueda Avanzada -->
+        <div class="search-form">
+            <h2>Búsqueda Avanzada</h2>
+            <label for="marca">Marca:</label>
+            <input type="text" id="marca" placeholder="Marca">
+
+            <label for="modelo">Modelo:</label>
+            <input type="text" id="modelo" placeholder="Modelo">
+
+            <label for="estado">Estado:</label>
+            <select id="estado">
+                <option value="">Todos</option>
+                <option value="Nuevo">NUEVO</option>
+                <option value="Usado">USADO</option>
+            </select>
+
+            <button id="btnBuscarAvanzado">Buscar</button>
+            <div class="info-message" id="infoMessage">Para realizar la búsqueda avanzada, debe volver a cargar el
+                archivo Excel.</div>
+        </div>
+
+        <div class="buscador">
+            <h2>Buscador</h2>
+              <label for="fileInput" class="file-label">Subir archivo Excel</label>
+            <input type="file" id="fileInput" accept=".xlsx, .xls" />
+            <input type="text" id="codigoBarras" style="display:none;" oninput="buscarProducto()"
+                placeholder="Buscar por código de barras..." />
+            <input type="text" id="terminoBusqueda" placeholder="Buscar...">
+            <button id="btnBuscar">Buscar</button>
+        </div>
+
+        <div id="resultadoTexto" style="margin-top: 10px;"></div> <!-- Elemento para mostrar el conteo -->
+        <div id="resultado-info" class="resultado-info"></div>
+        <div id="mensajeNoResultados" class="no-resultados" style="display: none;"></div>
+
+        <div class="actions">
+            <button id="btnAgregar">Agregar</button>
+            <button id="btnImprimir">Imprimir PDF</button>
+        </div>
+
+        <!-- Resultados de la búsqueda -->
+        <div class="results">
+            <table id="tablaResultados">
+                <!-- Aquí se mostrarán los resultados filtrados -->
+            </table>
+        </div>
     </div>
 
-    <div id="resultadoTexto" style="margin-top: 10px;"></div> <!-- Elemento para mostrar el conteo -->
-
-    <div id="resultado-info" class="resultado-info"></div>
-    <div id="mensajeNoResultados" class="no-resultados" style="display: none;"></div>
-
-    <div class="actions">
-        <button id="btnAgregar">Agregar</button>
-        <button id="btnImprimir">Imprimir PDF</button>
-    </div>
 
     <table id="tablaResultados" class="table-results">
         <thead>
@@ -73,10 +305,79 @@
         <tbody id="cuerpoTabla"></tbody>
     </table>
 
+    <!-- Asumimos que ya tienes los elementos en tu HTML -->
+
     <script>
         let datos = [];
         let workbook;
         javascript: (function () { document.body.style.zoom = '67%'; })();
+
+        // Leer archivo Excel y convertirlo en array de objetos
+        document.getElementById('inputExcel').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+
+                // Convierte el contenido de la hoja de cálculo en un array de objetos
+                datos = XLSX.utils.sheet_to_json(sheet, { defval: "" }); // `defval` rellena celdas vacías
+                console.log("Datos cargados:", datos);  // Verificar que los datos se han cargado correctamente
+                alert('Archivo cargado correctamente.');
+            };
+
+            reader.readAsArrayBuffer(file);
+        });
+
+        // Función para realizar la búsqueda avanzada
+        function buscarDatosAvanzados() {
+            const marca = document.getElementById('marca').value.toLowerCase();
+            const modelo = document.getElementById('modelo').value.toLowerCase();
+            const estado = document.getElementById('estado').value.toLowerCase();
+
+            const resultados = datos.filter(item => {
+                const itemMarca = item['Marca'] ? String(item['Marca']).toLowerCase() : '';
+                const itemModelo = item['Modelo'] ? String(item['Modelo']).toLowerCase() : '';
+                const itemEstado = item['Estado'] ? String(item['Estado']).toLowerCase() : '';
+
+                return (
+                    (marca === '' || itemMarca.includes(marca)) &&
+                    (modelo === '' || itemModelo.includes(modelo)) &&
+                    (estado === '' || itemEstado === estado)
+                );
+            });
+
+            mostrarResultados(resultados);
+        }
+
+        // Mostrar resultados en la tabla
+        function mostrarResultados(resultados) {
+            const tabla = document.getElementById('tablaResultados');
+            tabla.innerHTML = ''; // Limpiar la tabla
+
+            if (resultados.length === 0) {
+                tabla.innerHTML = '<tr><td>No se encontraron resultados</td></tr>';
+                return;
+            }
+
+            // Crear encabezado de la tabla
+            const encabezado = document.createElement('tr');
+            encabezado.innerHTML = '<th>MARCA</th><th>MODELO</th><th>ESTADO</th>';
+            tabla.appendChild(encabezado);
+
+            // Crear filas con resultados
+            resultados.forEach(item => {
+                const fila = document.createElement('tr');
+                fila.innerHTML = `<td>${item['Marca']}</td><td>${item['Modelo']}</td><td>${item['Estado']}</td>`;
+                tabla.appendChild(fila);
+            });
+        }
+
+        // Event Listener para el botón de búsqueda avanzada
+        document.getElementById('btnBuscarAvanzado').addEventListener('click', buscarDatosAvanzados);
 
         // Función para cargar el archivo Excel
         document.getElementById('fileInput').addEventListener('change', function (event) {
