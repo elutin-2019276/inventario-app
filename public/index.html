@@ -226,12 +226,12 @@
         <div id="listaComentarios"></div>
     </div>
 
-
     <div class="container">
         <!-- Sección de carga de archivo Excel -->
         <div class="upload-section">
             <h2>Cargar Archivo Excel</h2>
             <label class="upload-label" for="inputExcel">Seleccionar archivo</label>
+            <label for="fileInput" class="file-label">Subir archivo Excel</label>      
             <input type="file" id="inputExcel" accept=".xlsx, .xls">
             <div class="upload-message" id="uploadMessage"></div>
         </div>
@@ -253,13 +253,10 @@
             </select>
 
             <button id="btnBuscarAvanzado">Buscar</button>
-            <div class="info-message" id="infoMessage">Para realizar la búsqueda avanzada, debe volver a cargar el
-                archivo Excel.</div>
         </div>
 
         <div class="buscador">
-            <h2>Buscador</h2>
-              <label for="fileInput" class="file-label">Subir archivo Excel</label>
+            <h2>Buscador</h2>          
             <input type="file" id="fileInput" accept=".xlsx, .xls" />
             <input type="text" id="codigoBarras" style="display:none;" oninput="buscarProducto()"
                 placeholder="Buscar por código de barras..." />
